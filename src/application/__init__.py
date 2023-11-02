@@ -6,6 +6,7 @@ from loguru import logger
 
 class Application:
 
+    @logger.catch
     def __init__(self, xlsx_filepath: str, save_path: str):
         self.save_path = save_path
         self.results = {}
@@ -23,11 +24,13 @@ class Application:
                 message = f'Файл {xlsx_filepath} поврежден!\n {ValueError}'
                 raise RuntimeError(message)
 
+    @logger.catch
     def run(self):
         results = self.calculate()
         self.save(results)
         return self.save_path
 
+    @logger.catch
     def save(self, results):
         logger.info("Сохраняют результаты")
 
@@ -53,6 +56,7 @@ class Application:
                 sentences_df.to_excel(writer, sheet_name='Пассажи', index=False)
                 logger.debug("Файл сохранен!")
 
+    @logger.catch
     def calculate(self):
         results = {}
         for text_id, text in enumerate(self.texts, start=1):

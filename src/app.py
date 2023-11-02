@@ -59,12 +59,14 @@ def operate(filename):
 
 
 @app.route('/')
+@logger.catch
 def index():
     return render_template('index.html',
                            status='idle')
 
 
 @app.route('/ready/<filename>')
+@logger.catch
 def ready(filename):
     return render_template('index.html',
                            status='complete',
@@ -72,6 +74,7 @@ def ready(filename):
 
 
 @app.route('/upload', methods=['POST'])
+@logger.catch
 def upload():
     if 'file' not in request.files:
         message = "Файл не найден"
@@ -89,6 +92,7 @@ def upload():
 
     filename = secure_filename(file.filename)
     filepath = os.path.join(app.config['UPLOAD_FOLDER'], filename)
+    logger.debug(f"Файл будет сохранен: {filepath}")
     file.save(filepath)
 
     logger.info(f"Файл сохранен: {filepath}")
@@ -99,6 +103,7 @@ def upload():
 
 
 @app.route('/download/<filename>')
+@logger.catch
 def download(filename):
     file_path = os.path.join(app.config['PROCESSED_FOLDER'], filename)
     logger.debug(f"путь до файла: {file_path}")
@@ -108,6 +113,7 @@ def download(filename):
                      download_name=filename)
 
 
+@logger.catch
 def main():
     app.config['UPLOAD_FOLDER'] = os.path.join(os.getcwd(), 'files/uploaded')
     app.config['PROCESSED_FOLDER'] = os.path.join(os.getcwd(), 'files/processed')

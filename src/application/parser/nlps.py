@@ -32,6 +32,7 @@ class Nlps:
             self.download_libs()
             self.load_libs()
 
+    @logger.catch
     def load_libs(self):
         self.en = spacy.load("en_core_web_sm")
         self.de = spacy.load("de_core_news_sm")
@@ -41,6 +42,7 @@ class Nlps:
         self.pt = spacy.load("pt_core_news_sm")
         self.ru = spacy.load("ru_core_news_sm")
 
+    @logger.catch
     def download_libs(self):
         for nlp in self.supported:
             state = os.system(f"python -m spacy download {nlp}")

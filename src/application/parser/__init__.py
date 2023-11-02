@@ -28,6 +28,7 @@ class Phrase:
     def __repr__(self):
         return f"Phrase:{self.__lang}:{len(self.text.split())}"
 
+    @logger.catch
     def values(self):
         reply = {'exact': str(self.exact)[1:-1],
                  'exact_lemmed': str(self.exact_lemmed)[1:-1],
@@ -54,7 +55,7 @@ class Text:
 
 
 class Sentence:
-
+    @logger.catch
     def __init__(self, sent_id, text, lang):
         self.id_ = sent_id
         self.lang = lang
@@ -65,12 +66,15 @@ class Sentence:
     def __repr__(self):
         return f"Sentence:{self.lang}:{len(self.text.split())}"
 
+    @logger.catch
     def clear_full_sentence(self):
         return self.text.translate(str.maketrans('', '', string.punctuation)).lower()
 
+    @logger.catch
     def lemmatize(self, text) -> str:
         return " ".join([token.lemma_ for token in self.__nlp(text)]).lower()
 
+    @logger.catch
     def get_matches(self, phrase: Phrase):
         return as_class(dict(
             exact=self.__match_exact(phrase),
@@ -79,6 +83,7 @@ class Sentence:
             imprecise=self.__match_imprecise(phrase),
         ))
 
+    @logger.catch
     def __match_exact(self, phrase: Phrase) -> DefaultMunch:
         logger.trace(f"Phrase: {phrase.text}")
 
@@ -94,6 +99,7 @@ class Sentence:
                              id_=self.id_,
                              count=len(matches)))
 
+    @logger.catch
     def __match_exactlemmed(self, phrase: Phrase) -> DefaultMunch:
         sentence = self.lemmatized
 
@@ -106,12 +112,14 @@ class Sentence:
                              id_=self.id_,
                              count=len(matches)))
 
+    @logger.catch
     def __match_participant(self, phrase: Phrase) -> DefaultMunch:
         sentence = self.lemmatized
         logger.trace(f"Phrase: {phrase.lemma}")
         str_pattern = r'\b' + r'\b.*?\b'.join(map(re.escape, phrase.lemma.split())) + r'\b'
         return self.__re_search_lemmed(phrase, sentence, str_pattern)
 
+    @logger.catch
     def __match_imprecise(self, phrase: Phrase) -> DefaultMunch:
         lemma_phrase = phrase.lemma.replace(' ', '|')
         sentence = self.lemmatized
@@ -119,6 +127,7 @@ class Sentence:
 
         return self.__re_search_lemmed(phrase, sentence, str_pattern)
 
+    @logger.catch
     def __re_search_lemmed(self, phrase, sentence, str_pattern):
         pattern = re.compile(str_pattern)
         matches = re.findall(pattern, sentence)

@@ -22,9 +22,6 @@ def create_zip_archive(folder_path, output_path):
                 zipf.write(file_path, os.path.relpath(file_path, folder_path))
 
 
-
-
-
 @app.route('/')
 @logger.catch
 def index():
@@ -62,12 +59,16 @@ def upload():
                         code='info',
                         filename=file.filename))
 
+
 @app.route('/operate/<filename>')
 def operate(filename):
     up_path = os.path.join(app.config['UPLOAD_FOLDER'], filename)
     temp_dir_path = os.path.join(app.config['UPLOAD_FOLDER'], filename.rsplit('.', 1)[0])
     os.makedirs(temp_dir_path, exist_ok=True)
     down_path = os.path.join(app.config['PROCESSED_FOLDER'], filename.rsplit('.', 1)[0] + '.zip')
+    logger.debug(f'Файл: {up_path}')
+    logger.debug(f'Временная папка: {temp_dir_path}')
+
     try:
         lemme = Application(up_path, temp_dir_path)
 
@@ -77,7 +78,7 @@ def operate(filename):
         logger.error(message)
         return jsonify(dict(message=message,
                             code='error'))
-    except RuntimeError:
+    except RuntimeError as CorruptedFileException:
         message = "Файл поврежден. Дальнейшая обработка не возможна"
         logger.error(message)
         return jsonify(dict(message=message,

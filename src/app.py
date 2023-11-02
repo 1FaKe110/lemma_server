@@ -4,6 +4,7 @@ from flask_cors import CORS
 from flask import Flask, request, render_template, jsonify, send_file, flash, redirect, url_for
 from werkzeug.utils import secure_filename
 import os
+from os.path import join, dirname, realpath
 import zipfile
 
 from application import Application
@@ -102,7 +103,7 @@ def upload():
                             code='error'))
 
     file.filename = file.filename.replace(' ', '_')
-    filepath = os.path.join(app.config['UPLOAD_FOLDER'], file.filename)
+    filepath = join(dirname(realpath(__file__)), 'files/uploaded')
     logger.debug(f"Файл будет сохранен: {filepath}")
     with open(filepath, 'wb') as f:
         f.write(file.stream.read())

@@ -13,6 +13,7 @@ app = Flask(__name__)
 app.secret_key = '12345'  # секретный ключ для сессий
 CORS(app)
 
+logger.add("App.log")
 
 def create_zip_archive(folder_path, output_path):
     with zipfile.ZipFile(output_path, 'w', zipfile.ZIP_DEFLATED) as zipf:

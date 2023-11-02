@@ -101,6 +101,7 @@ def upload():
         return jsonify(dict(message=message,
                             code='error'))
 
+    file.filename = file.filename.replace(' ', '_')
     filepath = os.path.join(app.config['UPLOAD_FOLDER'], file.filename)
     logger.debug(f"Файл будет сохранен: {filepath}")
     file.save(filepath)

@@ -132,7 +132,7 @@ def download(filename):
 
 @logger.catch
 def main():
-    app.config['UPLOAD_FOLDER'] = os.path.join(os.getcwd()'files/uploaded')
+    app.config['UPLOAD_FOLDER'] = os.path.join(os.getcwd(), 'files/uploaded')
     app.config['PROCESSED_FOLDER'] = os.path.join(os.getcwd(), 'files/processed')
 
     logger.debug(f"Path: \n"

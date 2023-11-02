@@ -36,6 +36,7 @@
         {% if filename != 'undefined' %}
         <div class="get-file">
           <input type="button" onclick="DownloadServerFile('{{ filename }}')" value="Скачать результаты">
+          <a href="{{ url_for('index', status='idle') }}">На главную</a>
         </div>
       <script>
         DownloadServerFile('{{ filename }}');
@@ -46,6 +47,17 @@
           <a href="{{ url_for('index', status='idle') }}">На главную</a>
         </div>
         {% endif %}
+      {% endif %}
+    </div>
+    <div class="processed">
+      {% if files %}
+      <ul class="processed-list">
+      {% for file in files %}
+        <li class="element">
+          <a href="{{ url_for('ready', filename=filename) }}">{{ filename }}</a>
+        </li>
+      {% endfor %}
+      </ul>
       {% endif %}
     </div>
   </div>

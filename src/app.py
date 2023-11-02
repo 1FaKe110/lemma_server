@@ -15,6 +15,7 @@ CORS(app)
 
 logger.add("App.log")
 
+
 def create_zip_archive(folder_path, output_path):
     with zipfile.ZipFile(output_path, 'w', zipfile.ZIP_DEFLATED) as zipf:
         for root, dirs, files in os.walk(folder_path):
@@ -26,8 +27,11 @@ def create_zip_archive(folder_path, output_path):
 @app.route('/')
 @logger.catch
 def index():
+    files = os.listdir(join(app.config['PROCESSED_FOLDER']))
+
     return render_template('index.html',
-                           status='idle')
+                           status='idle',
+                           files=files)
 
 
 @app.route('/upload', methods=['POST'])

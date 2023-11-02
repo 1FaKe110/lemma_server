@@ -105,8 +105,9 @@ def upload():
     file.filename = file.filename.replace(' ', '_')
     filepath = join(dirname(realpath(__file__)), 'files/uploaded', file.filename)
     logger.debug(f"Файл будет сохранен: {filepath}")
-    with open(filepath, 'wb') as f:
-        f.write(file.stream.read())
+    if os.path.exists(filepath):
+        os.remove(filepath)
+    file.save(filepath)
 
     logger.info(f"Файл сохранен: {filepath}")
 
@@ -135,7 +136,7 @@ def main():
                  f" - {app.config['UPLOAD_FOLDER']} \n"
                  f" - {app.config['PROCESSED_FOLDER']}")
 
-    app.run(host='0.0.0.0', port=5000, debug=False)
+    app.run(host='127.0.0.1', port=5000, debug=False)
 
 
 if __name__ == '__main__':

@@ -66,7 +66,7 @@ def upload():
 def operate(filename):
     up_path = os.path.join(app.config['UPLOAD_FOLDER'], filename)
     temp_dir_path = os.path.join(app.config['UPLOAD_FOLDER'], filename.rsplit('.', 1)[0])
-    os.mkdir(temp_dir_path)
+    os.makedirs(temp_dir_path, exist_ok=True)
     down_path = os.path.join(app.config['PROCESSED_FOLDER'], filename.rsplit('.', 1)[0] + '.zip')
     try:
         lemme = Application(up_path, temp_dir_path)

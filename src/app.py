@@ -103,7 +103,7 @@ def upload():
                             code='error'))
 
     file.filename = file.filename.replace(' ', '_')
-    filepath = join(dirname(realpath(__file__)), 'files/uploaded')
+    filepath = join(dirname(realpath(__file__)), 'files/uploaded', file.filename)
     logger.debug(f"Файл будет сохранен: {filepath}")
     with open(filepath, 'wb') as f:
         f.write(file.stream.read())

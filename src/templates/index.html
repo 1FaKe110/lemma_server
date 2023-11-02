@@ -54,9 +54,9 @@
       {% if files %}
       <h4 class="title">Уже обработанные файлы</h4>
       <ul class="processed-list">
-      {% for file in files %}
+      {% for filename in files %}
         <li class="element">
-          <a href="{{ url_for('ready', filename=filename) }}">{{ file }}</a>
+          <a href="{{ url_for('ready', filename=filename) }}">{{ filename }}</a>
         </li>
       {% endfor %}
       </ul>

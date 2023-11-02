@@ -47,3 +47,4 @@ class Nlps:
         for nlp in self.supported:
             state = os.system(f"python -m spacy download {nlp}")
             logger.info(f'{nlp} {"downloaded" if state == 0 else "download failed"}')
+

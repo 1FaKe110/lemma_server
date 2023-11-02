@@ -33,3 +33,8 @@ main {
     font-weight: 400;
     color: blue;
 }
+
+.processed-list {
+    max-height: 100px;
+    overflow: auto;
+}

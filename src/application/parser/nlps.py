@@ -34,14 +34,25 @@ class Nlps:
 
     @logger.catch
     def load_libs(self):
-        logger.info("Подгружаю библиотеки")
+        logger.info("Подгружаю модели")
+
+        logger.info("Подгружаю en_core_web_sm")
         self.en = spacy.load("en_core_web_sm")
+        logger.info("Подгружаю de_core_news_sm")
         self.de = spacy.load("de_core_news_sm")
+        logger.info("Подгружаю fr_core_news_sm")
         self.fr = spacy.load("fr_core_news_sm")
+        logger.info("Подгружаю es_core_news_sm")
         self.es = spacy.load("es_core_news_sm")
+        logger.info("Подгружаю it_core_news_sm")
         self.it = spacy.load("it_core_news_sm")
+        logger.info("Подгружаю pt_core_news_sm")
         self.pt = spacy.load("pt_core_news_sm")
+        logger.info("Подгружаю ru_core_news_sm")
         self.ru = spacy.load("ru_core_news_sm")
+        logger.info("Подгружаю de_core_news_sm")
+
+        logger.info("Готово!")
 
     @logger.catch
     def download_libs(self):

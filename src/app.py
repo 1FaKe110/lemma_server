@@ -2,7 +2,6 @@ from loguru import logger
 from munch import DefaultMunch
 from flask_cors import CORS
 from flask import Flask, request, render_template, jsonify, send_file, flash, redirect, url_for
-from werkzeug.utils import secure_filename
 import os
 from os.path import join, dirname, realpath
 import zipfile

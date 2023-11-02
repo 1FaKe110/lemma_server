@@ -23,6 +23,46 @@ def create_zip_archive(folder_path, output_path):
                 zipf.write(file_path, os.path.relpath(file_path, folder_path))
 
 
+
+
+
+@app.route('/')
+@logger.catch
+def index():
+    return render_template('index.html',
+                           status='idle')
+
+
+@app.route('/upload', methods=['POST'])
+@logger.catch
+def upload():
+    if 'file' not in request.files:
+        message = "Файл не найден"
+        logger.error(message)
+        return jsonify(dict(message=message,
+                            code='error'))
+
+    file = request.files['file']
+
+    if file.filename == '':
+        message = "Файл не выбран"
+        logger.error(message)
+        return jsonify(dict(message=message,
+                            code='error'))
+
+    file.filename = file.filename.replace(' ', '_')
+    filepath = join(dirname(realpath(__file__)), 'files/uploaded', file.filename)
+    logger.debug(f"Файл будет сохранен: {filepath}")
+    if os.path.exists(filepath):
+        os.remove(filepath)
+    file.save(filepath)
+
+    logger.info(f"Файл сохранен: {filepath}")
+
+    return jsonify(dict(message=f"\n Файл сохранен: {file.filename}",
+                        code='info',
+                        filename=file.filename))
+
 @app.route('/operate/<filename>')
 def operate(filename):
     up_path = os.path.join(app.config['UPLOAD_FOLDER'], filename)
@@ -60,13 +100,6 @@ def operate(filename):
     return redirect(url_for('ready', filename=filename.rsplit('.', 1)[0] + '.zip'))
 
 
-@app.route('/')
-@logger.catch
-def index():
-    return render_template('index.html',
-                           status='idle')
-
-
 @app.route('/ready/<filename>')
 @logger.catch
 def ready(filename):
@@ -74,37 +107,6 @@ def ready(filename):
     return render_template('index.html',
                            status='complete',
                            filename=filename)
-
-
-@app.route('/upload', methods=['POST'])
-@logger.catch
-def upload():
-    if 'file' not in request.files:
-        message = "Файл не найден"
-        logger.error(message)
-        return jsonify(dict(message=message,
-                            code='error'))
-
-    file = request.files['file']
-
-    if file.filename == '':
-        message = "Файл не выбран"
-        logger.error(message)
-        return jsonify(dict(message=message,
-                            code='error'))
-
-    file.filename = file.filename.replace(' ', '_')
-    filepath = join(dirname(realpath(__file__)), 'files/uploaded', file.filename)
-    logger.debug(f"Файл будет сохранен: {filepath}")
-    if os.path.exists(filepath):
-        os.remove(filepath)
-    file.save(filepath)
-
-    logger.info(f"Файл сохранен: {filepath}")
-
-    return jsonify(dict(message=f"\n Файл сохранен: {file.filename}",
-                        code='info',
-                        filename=file.filename))
 
 
 @app.route('/download/<filename>')

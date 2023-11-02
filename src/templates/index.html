@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/html">
+<head>
+  <title>Загрузка и обработка файла</title>
+  <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+  <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='css/styles.css') }}">
+  <script src="{{ url_for('static', filename='js/script.js') }}"></script>
+</head>
+<body>
+
+<main>
+  <div class="title">
+    {% if status == 'idle' %}
+    <h1>Загрузка файла</h1>
+    {% else %}
+    <h1>Файл обработан</h1>
+    {% endif %}
+  </div>
+  <div class="content">
+    <div class="operate">
+      {% if status == 'idle' %}
+        <div class="add-file">
+          <input type="file" id="fileUpload" placeholder="Выберите файл для обработки">
+          <input type="button" onclick="uploadFile()" value="Загрузить">
+        </div>
+        <hr>
+        <div class="status">
+          <p>Статус обработки:</p>
+          <ul>
+            <li id="statusInfo">Ждем файл</li>
+            <li id="futureInfo"></li>
+          </ul>
+        </div>
+      {% elif status == 'complete' %}
+        {% if filename != 'undefined' %}
+        <div class="get-file">
+          <input type="button" onclick="DownloadServerFile('{{ filename }}')" value="Скачать результаты">
+        </div>
+      <script>
+        DownloadServerFile('{{ filename }}');
+      </script>
+      {% else %}
+        <div class="get-file">
+          <p>Такого файла нет. Просьба проверить ссылку по которой вы перешли</p>
+          <a href="{{ url_for('index', status='idle') }}">На главную</a>
+        </div>
+        {% endif %}
+      {% endif %}
+    </div>
+  </div>
+</main>
+</body>
+</html>

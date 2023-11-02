@@ -13,5 +13,7 @@ RUN python -m spacy download fr_core_news_sm
 RUN python -m spacy download de_core_news_sm
 RUN python -m spacy download en_core_web_sm
 
+CMD ["ls", "-la", "/usr/src/app/files/"]
+
 EXPOSE 1111
 CMD ["python3", "-u", "app.py"]

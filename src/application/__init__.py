@@ -61,6 +61,7 @@ class Application:
         results = {}
         for text_id, text in enumerate(self.texts, start=1):
             results[text_id] = {}
+            logger.debug(f'Считаю текст: {text_id}')
             for phrase in self.keys:
 
                 for sentence in text.sentences:
@@ -70,6 +71,7 @@ class Application:
                         if matches.__dict__[row]['count'] < 1:
                             continue
 
+                        logger.debug("Найдено совпадение")
                         phrase.__dict__[row].append(
                             matches.__dict__[row]['id_']
                         )

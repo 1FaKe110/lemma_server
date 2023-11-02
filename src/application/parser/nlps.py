@@ -34,6 +34,7 @@ class Nlps:
 
     @logger.catch
     def load_libs(self):
+        logger.info("Подгружаю библиотеки")
         self.en = spacy.load("en_core_web_sm")
         self.de = spacy.load("de_core_news_sm")
         self.fr = spacy.load("fr_core_news_sm")
@@ -44,6 +45,7 @@ class Nlps:
 
     @logger.catch
     def download_libs(self):
+        logger.info("Библиотеки не были найдены. Скачиваю заново")
         for nlp in self.supported:
             state = os.system(f"python -m spacy download {nlp}")
             logger.info(f'{nlp} {"downloaded" if state == 0 else "download failed"}')

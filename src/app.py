@@ -45,16 +45,26 @@ def operate(filename):
     except KeyError:
         message = (f'Не верные названия страниц в xlsx файле\n'
                    f' - должно быть ["Текст", "Ключи"]')
+        logger.error(message)
         return jsonify(dict(message=message,
                             code='error'))
     except RuntimeError:
         message = "Файл поврежден. Дальнейшая обработка не возможна"
+        logger.error(message)
         return jsonify(dict(message=message,
                             code='error'))
 
+    logger.info(f"Начинаю обработку файла: {filename}")
     unzipped_dir = lemme.run()
+
+    logger.info(f"Создаем архив из папки {unzipped_dir}")
     create_zip_archive(unzipped_dir, down_path)
 
+    logger.info(f"Удаляю временную папку {unzipped_dir}")
+    rm_state = os.system(f"rm -rf {unzipped_dir}")
+    logger.debug(f'Статус удаления: {rm_state}')
+
+    logger.info(f"Архив создан: {down_path}")
     return redirect(url_for('ready', filename=filename.rsplit('.', 1)[0] + '.zip'))
 
 
@@ -68,6 +78,7 @@ def index():
 @app.route('/ready/<filename>')
 @logger.catch
 def ready(filename):
+    logger.info(f'Файл {filename} готов!')
     return render_template('index.html',
                            status='complete',
                            filename=filename)

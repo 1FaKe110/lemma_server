@@ -27,11 +27,16 @@ def create_zip_archive(folder_path, output_path):
 @app.route('/')
 @logger.catch
 def index():
-    files = os.listdir(join(app.config['PROCESSED_FOLDER']))
+    files = [f for f in os.listdir(app.config['PROCESSED_FOLDER']) if f != '____.file']
+
+    if len(files):
+        for file in files:
+            logger.info(f" - {file}")
 
     return render_template('index.html',
                            status='idle',
                            files=files)
+
 
 
 @app.route('/upload', methods=['POST'])

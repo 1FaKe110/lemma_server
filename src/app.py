@@ -101,16 +101,15 @@ def upload():
         return jsonify(dict(message=message,
                             code='error'))
 
-    filename = secure_filename(file.filename)
-    filepath = os.path.join(app.config['UPLOAD_FOLDER'], filename)
+    filepath = os.path.join(app.config['UPLOAD_FOLDER'], file.filename)
     logger.debug(f"Файл будет сохранен: {filepath}")
     file.save(filepath)
 
     logger.info(f"Файл сохранен: {filepath}")
 
-    return jsonify(dict(message=f"\n Файл сохранен: {filename}",
+    return jsonify(dict(message=f"\n Файл сохранен: {file.filename}",
                         code='info',
-                        filename=filename))
+                        filename=file.filename))
 
 
 @app.route('/download/<filename>')

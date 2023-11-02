@@ -24,13 +24,9 @@ class Nlps:
                        'ru_core_news_sm']
     en, de, fr, es, it, pt, ru = [None for _ in range(7)]
 
+    @logger.catch
     def __init__(self):
-        try:
-            self.load_libs()
-        except Exception as ex:
-            logger.error(ex)
-            self.download_libs()
-            self.load_libs()
+        self.load_libs()
 
     @logger.catch
     def load_libs(self):

@@ -9,7 +9,7 @@ from application.parser.nlps import Nlps
 
 as_class = DefaultMunch.fromDict
 DetectorFactory.seed = 0
-
+local_nlps = Nlps()
 
 class Phrase:
 
@@ -17,7 +17,7 @@ class Phrase:
         self.text: str = text
         # self.__lang = detect(text)
         self.__lang: str = 'en'  # TODO: fix language detection
-        self.__nlp = Nlps().__getattribute__(self.__lang)
+        self.__nlp = local_nlps.__getattribute__(self.__lang)
         self.lemma: str = " ".join([token.lemma_ for token in self.__nlp(text)]).lower()
 
         self.exact = []
@@ -44,10 +44,13 @@ class Phrase:
 
 
 class Text:
+
+    @logger.catch
     def __init__(self, text: str):
         self.lang = detect(text)
+        self.nlp = local_nlps.__getattribute__(self.lang)
         self.text = text.replace('\n', '.')
-        self.sentences = [Sentence(s_id, x, self.lang) for s_id, x
+        self.sentences = [Sentence(s_id, x, self.lang, self.nlp) for s_id, x
                           in enumerate(re.split(r'(?<=[.!?])\s+', text), start=1)]
 
     def __repr__(self):
@@ -56,11 +59,11 @@ class Text:
 
 class Sentence:
     @logger.catch
-    def __init__(self, sent_id, text, lang):
+    def __init__(self, sent_id, text, lang, nlp):
         self.id_ = sent_id
         self.lang = lang
         self.text: str = text
-        self.__nlp = Nlps().__getattribute__(lang)
+        self.__nlp = nlp
         self.lemmatized = None
 
     def __repr__(self):

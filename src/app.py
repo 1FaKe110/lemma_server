@@ -104,7 +104,8 @@ def upload():
     file.filename = file.filename.replace(' ', '_')
     filepath = os.path.join(app.config['UPLOAD_FOLDER'], file.filename)
     logger.debug(f"Файл будет сохранен: {filepath}")
-    file.save(filepath)
+    with open(filepath, 'wb') as f:
+        f.write(file.stream.read())
 
     logger.info(f"Файл сохранен: {filepath}")
 

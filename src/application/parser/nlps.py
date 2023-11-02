@@ -50,8 +50,6 @@ class Nlps:
         self.pt = spacy.load("pt_core_news_sm")
         logger.info("Подгружаю ru_core_news_sm")
         self.ru = spacy.load("ru_core_news_sm")
-        logger.info("Подгружаю de_core_news_sm")
-
         logger.info("Готово!")
 
     @logger.catch

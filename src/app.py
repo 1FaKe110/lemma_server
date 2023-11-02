@@ -23,17 +23,6 @@ def create_zip_archive(folder_path, output_path):
                 zipf.write(file_path, os.path.relpath(file_path, folder_path))
 
 
-@app.route('/operate/mock/<filename>')
-def operate_mock(filename):
-    up = os.path.join(app.config['UPLOAD_FOLDER'], filename)
-    logger.debug(f'from: {up}')
-    down = os.path.join(app.config['PROCESSED_FOLDER'], filename)
-    logger.debug(f'to: {down}')
-    cp = os.system(f'cp {up} {down}')
-    logger.debug(f'Copy state: {cp}')
-    return redirect(url_for('ready', filename=filename))
-
-
 @app.route('/operate/<filename>')
 def operate(filename):
     up_path = os.path.join(app.config['UPLOAD_FOLDER'], filename)
@@ -63,6 +52,8 @@ def operate(filename):
 
     logger.info(f"Удаляю временную папку {unzipped_dir}")
     rm_state = os.system(f"rm -rf {unzipped_dir}")
+    logger.debug(f'Статус удаления: {rm_state}')
+    rm_state = os.system(f"rm {unzipped_dir}")
     logger.debug(f'Статус удаления: {rm_state}')
 
     logger.info(f"Архив создан: {down_path}")

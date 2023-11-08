@@ -64,7 +64,7 @@ class Application:
             logger.debug(f'Считаю текст: {text_id}')
             for key_text in self.keys:
 
-                if not all([sim.isalnum() for sim in key_text]):
+                if not all([sim.isalnum() for sim in ''.join(key_text.split())]):
                     logger.warning(f'{key_text} содержит запрещенные символы')
                     continue
 

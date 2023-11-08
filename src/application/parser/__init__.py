@@ -13,7 +13,7 @@ local_nlps = Nlps()
 
 class Phrase:
     def __init__(self, text, lang):
-        self.text: str = ''.join(filter(str.isalnum, text))
+        self.text: str = re.sub(r"[^A-Za-z0-9]", "", text)
         self.__lang: str = lang
         self.__nlp = local_nlps.__getattribute__(self.__lang)
         self.lemma: str = " ".join([token.lemma_ for token in self.__nlp(text)]).lower()

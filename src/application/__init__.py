@@ -19,7 +19,7 @@ class Application:
 
             try:
                 self.texts = [Text(raw) for raw in pd.read_excel(reader, 'Текст', header=None)[0]]
-                self.keys = [Phrase(raw) for raw in pd.read_excel(reader, 'Ключи', header=None)[0]]
+                self.keys = [raw for raw in pd.read_excel(reader, 'Ключи', header=None)[0]]
             except ValueError:
                 message = f'Файл {xlsx_filepath} поврежден!\n {ValueError}'
                 raise RuntimeError(message)
@@ -62,11 +62,10 @@ class Application:
         for text_id, text in enumerate(self.texts, start=1):
             results[text_id] = {}
             logger.debug(f'Считаю текст: {text_id}')
-            for phrase in self.keys:
-
+            for key_text in self.keys:
+                phrase = Phrase(key_text, text.lang)
                 for sentence in text.sentences:
                     matches = sentence.get_matches(phrase)
-
                     for row in matches:
                         if matches.__dict__[row]['count'] < 1:
                             continue

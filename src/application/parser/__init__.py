@@ -12,11 +12,9 @@ DetectorFactory.seed = 0
 local_nlps = Nlps()
 
 class Phrase:
-
-    def __init__(self, text):
-        self.text: str = text
-        # self.__lang = detect(text)
-        self.__lang: str = 'en'  # TODO: fix language detection
+    def __init__(self, text, lang):
+        self.text: str = ''.join(filter(str.isalnum, text))
+        self.__lang: str = lang
         self.__nlp = local_nlps.__getattribute__(self.__lang)
         self.lemma: str = " ".join([token.lemma_ for token in self.__nlp(text)]).lower()
 

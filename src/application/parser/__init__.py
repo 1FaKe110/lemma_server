@@ -15,9 +15,10 @@ local_nlps = Nlps()
 
 def time_of(function):
     def wrapped(*args):
-        start_time = time.perf_counter_ns()
+        start_time = time.time()
         res = function(*args)
-        logger.info(f"Время обработки: {time.perf_counter_ns() - start_time}")
+        total = time.time() - start_time
+        logger.info(f"Время обработки: {total}")
         return res
 
     return wrapped

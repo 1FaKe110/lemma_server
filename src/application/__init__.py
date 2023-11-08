@@ -63,7 +63,13 @@ class Application:
             results[text_id] = {}
             logger.debug(f'Считаю текст: {text_id}')
             for key_text in self.keys:
+
+                if not all([sim.isalnum() for sim in key_text]):
+                    logger.warning(f'{key_text} содержит запрещенные символы')
+                    continue
+
                 phrase = Phrase(key_text, text.lang)
+                logger.debug(f"Проверяю фразу: {phrase}")
                 for sentence in text.sentences:
                     matches = sentence.get_matches(phrase)
                     for row in matches:

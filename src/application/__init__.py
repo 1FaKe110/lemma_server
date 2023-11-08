@@ -69,7 +69,7 @@ class Application:
                     continue
 
                 phrase = Phrase(key_text, text.lang)
-                logger.debug(f"Проверяю фразу: {phrase}")
+                logger.debug(f"Проверяю фразу: {phrase.text}")
                 for sentence in text.sentences:
                     matches = sentence.get_matches(phrase)
                     for row in matches:

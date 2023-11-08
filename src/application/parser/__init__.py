@@ -6,10 +6,22 @@ from loguru import logger
 from langdetect import detect, DetectorFactory
 from munch import DefaultMunch
 from application.parser.nlps import Nlps
+import time
 
 as_class = DefaultMunch.fromDict
 DetectorFactory.seed = 0
 local_nlps = Nlps()
+
+
+def time_of(function):
+    def wrapped(*args):
+        start_time = time.perf_counter_ns()
+        res = function(*args)
+        logger.info(f"Время обработки: {time.perf_counter_ns() - start_time}")
+        return res
+
+    return wrapped
+
 
 class Phrase:
     def __init__(self, text, lang):
@@ -76,6 +88,7 @@ class Sentence:
         return " ".join([token.lemma_ for token in self.__nlp(text)]).lower()
 
     @logger.catch
+    @time_of
     def get_matches(self, phrase: Phrase):
         return as_class(dict(
             exact=self.__match_exact(phrase),

@@ -18,7 +18,7 @@ def time_of(function):
         start_time = time.time()
         res = function(*args)
         total = time.time() - start_time
-        logger.info(f"Время обработки: {total}")
+        logger.trace(f"Время обработки: {total}")
         return res
 
     return wrapped

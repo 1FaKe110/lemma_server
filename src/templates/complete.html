@@ -36,6 +36,7 @@
       <thead>
       <th>Название</th>
       <th>Статус</th>
+      <th>Время обработки</th>
       <th></th>
       </thead>
       <tbody>
@@ -43,10 +44,10 @@
       <tr>
         <td>{{ file.filename }}</td>
         <td>
-          <div class="complete-indicator">
-            <span class="material-icons" style="color: green">done_all</span>
+          <span class="material-icons" style="color: green">done_all</span>
+        </td>
+        <td>
             <i>{{file.process_time}} s</i>
-          </div>
         </td>
         <td>
           <a href="{{ url_for('ready', filename=file.download_filename) }}">Скачать</a>

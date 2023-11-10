@@ -151,3 +151,4 @@ class Sentence:
         return as_class(dict(phrase=phrase.text,
                              id_=self.id_,
                              count=len(matches)))
+

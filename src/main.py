@@ -117,6 +117,15 @@ def upload():
         return jsonify(dict(message=message,
                             code='error'))
 
+    old_file = File.query.filter_by(filename=file.filename).first()
+    if old_file:
+        if old_file.status == 'В обработке':
+            message = ("Такой файл в данный момент обрабатывается. "
+                       "Дождитесь окончания обработки или загрузите этот файл с другим именем!")
+            logger.error(message)
+            return jsonify(dict(message=message,
+                                code='error'))
+
     file.filename = file.filename.replace(' ', '_')
     filepath = join(dirname(realpath(__file__)), 'files/uploaded', file.filename)
     logger.debug(f"Файл будет сохранен: {filepath}")

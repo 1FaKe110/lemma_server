@@ -29,7 +29,7 @@
 
 <main>
   <div class="content">
-    <table>
+    <table id="processingTable">
       <thead>
         <th>Название</th>
         <th>Статус</th>
@@ -45,9 +45,6 @@
         {% elif file.status == 'В обработке' %}
         <td><span class="material-icons spinning-ring" style="color: #c5ba08">sync</span></td>
         <td> ... </td>
-        {% elif file.status == 'Обработан' %}
-        <td><span class="material-icons" style="color: green">done_all</span></td>
-        <td><a href="#">Скачать</a></td>
         {% endif %}
       </tr>
       {% endfor %}

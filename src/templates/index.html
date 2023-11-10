@@ -45,7 +45,6 @@
         <h4>Статус обработки:</h4>
         <ul>
           <li id="statusInfo">Ждем файл</li>
-          <li id="futureInfo"></li>
         </ul>
       </div>
       {% elif status == 'complete' %}
@@ -59,7 +58,7 @@
       </script>
       {% else %}
       <div class="get-file">
-        <p>Такого файла нет. Просьба проверить ссылку по которой вы перешли</p>
+        <p>Такого файла нет. Проверьте ссылку по которой вы перешли</p>
         <a href="{{ url_for('index', status='idle') }}">На главную</a>
       </div>
       {% endif %}

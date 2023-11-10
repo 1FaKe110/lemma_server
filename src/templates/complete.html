@@ -29,7 +29,10 @@
 
 <main>
   <div class="content">
-    <table>
+    {% if files %}
+<!--    <input type="text" id="categorySearchInput" placeholder="Поиск по файлам"-->
+<!--       onkeyup="searchTable('completeTable', 'categorySearchInput')">-->
+    <table id="completeTable">
       <thead>
       <th>Название</th>
       <th>Статус</th>
@@ -52,6 +55,9 @@
       {% endfor %}
       </tbody>
     </table>
+    {% else %}
+    <h3>Обработанных файлов еще нет</h3>
+    {% endif %}
   </div>
 </main>
 

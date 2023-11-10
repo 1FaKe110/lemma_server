@@ -3,10 +3,11 @@ body {
     justify-content: center;
     background: linear-gradient(-30deg, #f8f8f8, #fdfdfd);
     font-family: 'Open Sans', sans-serif;
-    transition: opacity 0.3s ease-in;
     flex-direction: column;
     align-content: center;
     align-items: center;
+    opacity: 0;
+    transition: opacity 0.3s ease-in; /* Плавное появление элементов */
 }
 
 

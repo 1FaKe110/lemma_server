@@ -11,11 +11,12 @@ function uploadFile() {
     })
     .then(response => response.json())
     .then(data => {
+        let statusInfo = document.getElementById("statusInfo")
+        statusInfo.classList.add(data.code)
         if (data.code == "error") {
-            document.getElementById("statusInfo").innerText = "Статус обработки: Ошибка \n" + data.message;
+            statusInfo.innerText = "Статус обработки: Ошибка \n" + data.message;
         } else {
-            data.code == "info"
-            document.getElementById("statusInfo").innerText = "Статус: " + data.message;
+            statusInfo.innerText = "Статус: " + data.message;
             console.log(data)
             window.location.href = '/processing';
         }
@@ -38,3 +39,41 @@ function operate(filename) {
 window.addEventListener('load', function () {
     document.body.classList.add('loaded');
 });
+
+function searchTable(tableId, searchInputId) {
+
+    console.log(tableId)
+    let table = document.getElementById(tableId);
+    let searchInput = document.getElementById(searchInputId);
+    let filter = searchInput.value.toUpperCase();
+    let rows = table.getElementsByTagName("tr");
+
+    for (let i = 1; i < rows.length; i++) {
+        let rowData = rows[i].getElementsByTagName("td");
+        let foundMatch = false;
+
+        for (let j = 0; j < rowData.length; j++) {
+            console.log('rowData[j] = ' + rowData[j]);
+            if (!rowData[j]) {
+                continue;
+            }
+
+            input_tag = rowData[j].getElementsByClassName('name_column');
+            console.log(input_tag);
+            if (input_tag.length < 1) {
+                continue;
+            }
+            var cellData = input_tag[0].value;
+
+
+            console.log('cellData = ' + cellData)
+            if (cellData.toUpperCase().indexOf(filter) > -1) {
+//            if (cellData.toUpperCase() == filter.toUpperCase()) {
+                foundMatch = true;
+                break;
+            }
+        }
+
+        rows[i].style.display = foundMatch ? "" : "none";
+    }
+}

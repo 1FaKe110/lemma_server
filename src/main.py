@@ -130,18 +130,20 @@ def upload():
 
     logger.info(f"Файл сохранен: {filepath}")
 
-    logger.info(f"Cоздаем новую запись в бд {File.__repr__}")
+
     old_file = File.query.filter_by(filename=file.filename).first()
     if old_file:
+        logger.info(f"Редактирую предыдущую обработку {file.filename}")
         old_file.download_path = None
         old_file.status = 'Загружен'
         old_file.process_time = None
         old_file.complete_timestamp = None
         old_file.uploaded_timestamp = datetime.now()
     else:
+        logger.info(f"Cоздаем новую запись в бд для файла {file.filename}")
         new_file = File(filename=file.filename, upload_filepath=filepath)
         db.session.add(new_file)
-        db.session.commit()
+    db.session.commit()
 
     return jsonify(dict(message=f"\n Файл сохранен: {file.filename}",
                         code='info',

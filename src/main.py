@@ -130,7 +130,6 @@ def upload():
 
     logger.info(f"Файл сохранен: {filepath}")
 
-
     old_file = File.query.filter_by(filename=file.filename).first()
     if old_file:
         logger.info(f"Редактирую предыдущую обработку {file.filename}")

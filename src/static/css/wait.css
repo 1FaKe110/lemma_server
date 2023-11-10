@@ -1,0 +1,21 @@
+th, td {
+    width: 200px;
+    text-align: center;
+}
+
+@keyframes spin {
+  0% {
+    transform: rotate(0deg);
+  }
+  100% {
+    transform: rotate(-360deg);
+  }
+}
+
+.spinning-ring {
+  display: inline-block;
+  width: 25px;
+  height: 25px;
+  border-radius: 50%;
+  animation: spin 1s linear infinite;
+}

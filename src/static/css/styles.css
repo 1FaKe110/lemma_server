@@ -3,10 +3,105 @@ body {
     justify-content: center;
     background: linear-gradient(-30deg, #f8f8f8, #fdfdfd);
     font-family: 'Open Sans', sans-serif;
-    transition: opacity 0.3s ease-in; /* Плавное появление элементов */
+    transition: opacity 0.3s ease-in;
+    flex-direction: column;
+    align-content: center;
+    align-items: center;
 }
 
+
+/* Стили для показа элементов после загрузки страницы */
+body.loaded {
+    opacity: 1;
+    transition: opacity 0.2s ease-in;
+}
+
+
+/* Стили для скрытия анимации загрузки после загрузки страницы */
+.loading-overlay {
+    opacity: 0;
+    transition: opacity 0.5s ease-out; /* Плавное исчезновение элементов */
+}
+
+/* Стили для навигационной панели */
+.top-panel {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    align-content: center;
+    flex-wrap: nowrap;
+    flex-direction: row;
+}
+
+nav {
+    background-color: #e9e9e9;
+    padding: 10px;
+    position: relative;
+    top: 10px;
+    border-radius: 20px;
+    width: fit-content;
+    display: flex;
+    flex-direction: row;
+    flex-wrap: nowrap;
+    align-content: center;
+    justify-content: center;
+    align-items: baseline;
+}
+
+nav ul {
+    list-style-type: none;
+    margin: 0;
+    padding: 0;
+}
+
+nav ul li {
+    display: inline;
+    box-shadow: 0 0 10px rgb(232 232 232 / 0%);
+    border-radius: 5px;
+    border-bottom: 1px solid #e7e7e7;
+    transition: all .5s ease-in-out;
+}
+
+nav ul li:hover {
+    padding: 10px;
+    box-shadow: 0 0 10px rgb(232 232 232 / 0%);
+    border-bottom: 1px solid black;
+    border-radius: 5px;
+    transition: all .5s ease-in-out;
+}
+
+nav ul li.nav-li-active {
+    padding: 10px;
+    box-shadow: 0 0 10px rgb(232 232 232 / 0%);
+    border-bottom: 1px solid black;
+    border-radius: 5px;
+    transition: all .5s ease-in-out;
+}
+
+nav ul li.nav-li-active:hover {
+    padding: 10px;
+    box-shadow: 0 0 10px rgb(250 250 250 / 0%);
+    border-bottom: 1px solid #d2d2d2;
+    border-radius: 5px;
+    transition: all .5s ease-in-out;
+}
+
+
+nav ul li a {
+    padding: 20px;
+    color: #333;
+    text-decoration: none;
+}
+
+a {
+    text-decoration: NONE;
+    color: #4f3551
+}
+
+
+/* Стили для основного блока информации */
 main {
+    margin-top: 40px;
     display: flex;
     flex-direction: column;
     flex-wrap: nowrap;
@@ -37,4 +132,25 @@ main {
 .processed-list {
     max-height: 100px;
     overflow: auto;
+}
+
+h1 {
+    padding: 0;
+    margin: 0;
+    margin-bottom: 20px;
+}
+
+
+.complete-indicator {
+    display: inline-flex;
+    flex-wrap: nowrap;
+    flex-direction: row;
+    align-content: center;
+    justify-content: center;
+    align-items: center;
+    padding: 10px;
+}
+
+.complete-indicator i {
+    padding-left: 10px
 }

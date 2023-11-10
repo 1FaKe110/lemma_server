@@ -11,20 +11,30 @@ function uploadFile() {
     })
     .then(response => response.json())
     .then(data => {
-
         if (data.code == "error") {
             document.getElementById("statusInfo").innerText = "Статус обработки: Ошибка \n" + data.message;
         } else {
             data.code == "info"
             document.getElementById("statusInfo").innerText = "Статус: " + data.message;
-            document.getElementById("futureInfo").innerText = "Запускаю обработку: по окончанию будет выдан .zip архив";
             console.log(data)
-            window.location.href = '/operate/' + data.filename
+            window.location.href = '/processing';
         }
     })
 }
 
 function DownloadServerFile(filename) {
-    console.log("Downloading: " + filename)
-    window.location.href = "/download/" + filename
+    console.log("Downloading: " + filename);
+    window.location.href = "/download/" + filename;
 }
+
+function operate(filename) {
+    console.log("Запуск обработки файла: " + filename);
+    fetch("/operate/" + filename, {
+        method: "GET"
+    })
+    location.reload();
+}
+
+window.addEventListener('load', function () {
+    document.body.classList.add('loaded');
+});

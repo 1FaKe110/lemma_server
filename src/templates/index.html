@@ -9,6 +9,22 @@
 </head>
 <body>
 
+<div class="top-panel">
+    <nav class="nav-bar">
+        <ul class="nav-ul">
+            <li class="nav-li-active">
+                <a class="nav-a" href="{{url_for('index')}}">Новый файл</a>
+            </li>
+            <li class="nav-li">
+                <a class="nav-a" href="{{url_for('processing')}}">В обработке</a>
+            </li>
+            <li class="nav-li">
+                <a class="nav-a" href="{{url_for('complete')}}">Обработанные</a>
+            </li>
+        </ul>
+    </nav>
+</div>
+
 <main>
   <div class="title">
     {% if status == 'idle' %}

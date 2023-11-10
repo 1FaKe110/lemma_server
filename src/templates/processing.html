@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/html">
+<head>
+  <title>Загрузка и обработка файла</title>
+  <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+  <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='css/styles.css') }}">
+  <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='css/wait.css') }}">
+  <script src="{{ url_for('static', filename='js/script.js') }}"></script>
+  <meta http-equiv="refresh" content="10"> <!-- Обновление каждые 5 секунд -->
+</head>
+<body>
+
+<div class="top-panel">
+    <nav class="nav-bar">
+        <ul class="nav-ul">
+            <li class="nav-li">
+                <a class="nav-a" href="{{url_for('index')}}">Новый файл</a>
+            </li>
+            <li class="nav-li-active">
+                <a class="nav-a" href="{{url_for('processing')}}">В обработке</a>
+            </li>
+            <li class="nav-li">
+                <a class="nav-a" href="{{url_for('complete')}}">Обработанные</a>
+            </li>
+        </ul>
+    </nav>
+</div>
+
+<main>
+  <div class="content">
+    <table>
+      <thead>
+        <th>Название</th>
+        <th>Статус</th>
+        <th></th>
+      </thead>
+      <tbody>
+      {% for file in files %}
+      <tr>
+        <td>{{ file.filename }}</td>
+        {% if file.status == 'Загружен' %}
+        <td><span class="material-icons" style="color: green">file_upload</span></td>
+        <td><input type="button" value="Обработать" onclick="operate('{{file.filename}}')"></td>
+        {% elif file.status == 'В обработке' %}
+        <td><span class="material-icons spinning-ring" style="color: #c5ba08">sync</span></td>
+        <td> ... </td>
+        {% elif file.status == 'Обработан' %}
+        <td><span class="material-icons" style="color: green">done_all</span></td>
+        <td><a href="#">Скачать</a></td>
+        {% endif %}
+      </tr>
+      {% endfor %}
+      </tbody>
+    </table>
+  </div>
+</main>
+
+</body>
+</html>

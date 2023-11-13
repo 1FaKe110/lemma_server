@@ -17,8 +17,10 @@ class Application:
                            f' - должно быть ["Текст", "Ключи"]')
                 raise KeyError(message)
 
+            self.texts = []
             try:
-                self.texts = [Text(raw) for raw in pd.read_excel(reader, 'Текст', header=None)[0]]
+                for raw in pd.read_excel(reader, 'Текст', header=None)[0]:
+                    self.texts.append(Text(raw.replace('\n', '. ')))
                 self.keys = [raw for raw in pd.read_excel(reader, 'Ключи', header=None)[0]]
             except ValueError:
                 message = f'Файл {xlsx_filepath} поврежден!\n {ValueError}'
@@ -71,7 +73,10 @@ class Application:
                 phrase = Phrase(key_text, text.lang)
                 logger.debug(f"Проверяю фразу: {phrase.text}")
                 for sentence in text.sentences:
+                    logger.debug(f"Ищу в предложении: {sentence.text}")
                     matches = sentence.get_matches(phrase)
+                    logger.debug(matches)
+
                     for row in matches:
                         if matches.__dict__[row]['count'] < 1:
                             continue

@@ -135,9 +135,9 @@ class Sentence:
 
     @logger.catch
     def __match_imprecise(self, phrase: Phrase) -> DefaultMunch:
-        lemma_phrase = phrase.lemma.replace(' ', '|')
+        lemma_phrase = phrase.lemma.replace(' ', '|^')
         sentence = self.lemmatized
-        str_pattern = r'\w*?(' + lemma_phrase + ')'
+        str_pattern = r'\w*?(^' + lemma_phrase + ')'
 
         return self.__re_search_lemmed(phrase, sentence, str_pattern)
 

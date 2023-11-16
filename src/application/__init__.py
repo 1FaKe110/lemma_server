@@ -21,16 +21,41 @@ class Application:
             try:
                 for raw in pd.read_excel(reader, 'Текст', header=None)[0]:
                     self.texts.append(Text(raw.replace('\n', '. ')))
-                self.keys = [raw for raw in pd.read_excel(reader, 'Ключи', header=None)[0]]
+                self.keys = pd.read_excel(reader, 'Ключи', header=None, index_col=0)
             except ValueError:
                 message = f'Файл {xlsx_filepath} поврежден!\n {ValueError}'
                 raise RuntimeError(message)
 
     @logger.catch
-    def run(self):
-        results = self.calculate()
-        self.save(results)
-        return self.save_path
+    def calculate(self):
+        results = {}
+        for text_id, text in enumerate(self.texts, start=1):
+            results[text_id] = {}
+            logger.debug(f'Считаю текст: {text_id}')
+            for key in self.keys.iterrows():
+                key_text, key_url = key[0], key[1][1]
+                if not all([sim.isalnum() for sim in ''.join(key_text.split())]):
+                    logger.warning(f'{key_text} содержит запрещенные символы')
+                    continue
+
+                phrase = Phrase(key_text, key_url, text.lang)
+                logger.debug(f"Проверяю фразу: {phrase.text}")
+                for sentence in text.sentences:
+                    logger.debug(f"Ищу в предложении: {sentence.text}")
+                    matches = sentence.get_matches(phrase)
+                    logger.debug(matches)
+
+                    for row in matches:
+                        if matches.__dict__[row]['count'] < 1:
+                            continue
+
+                        logger.debug("Найдено совпадение")
+                        phrase.__dict__[row].append(
+                            matches.__dict__[row]['id_']
+                        )
+
+                results[text_id][phrase.text] = phrase.values()
+        return results
 
     @logger.catch
     def save(self, results):
@@ -59,32 +84,7 @@ class Application:
                 logger.debug("Файл сохранен!")
 
     @logger.catch
-    def calculate(self):
-        results = {}
-        for text_id, text in enumerate(self.texts, start=1):
-            results[text_id] = {}
-            logger.debug(f'Считаю текст: {text_id}')
-            for key_text in self.keys:
-
-                if not all([sim.isalnum() for sim in ''.join(key_text.split())]):
-                    logger.warning(f'{key_text} содержит запрещенные символы')
-                    continue
-
-                phrase = Phrase(key_text, text.lang)
-                logger.debug(f"Проверяю фразу: {phrase.text}")
-                for sentence in text.sentences:
-                    logger.debug(f"Ищу в предложении: {sentence.text}")
-                    matches = sentence.get_matches(phrase)
-                    logger.debug(matches)
-
-                    for row in matches:
-                        if matches.__dict__[row]['count'] < 1:
-                            continue
-
-                        logger.debug("Найдено совпадение")
-                        phrase.__dict__[row].append(
-                            matches.__dict__[row]['id_']
-                        )
-
-                results[text_id][phrase.text] = phrase.values()
-        return results
+    def run(self):
+        results = self.calculate()
+        self.save(results)
+        return self.save_path

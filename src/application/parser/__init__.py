@@ -25,8 +25,9 @@ def time_of(function):
 
 
 class Phrase:
-    def __init__(self, text, lang):
+    def __init__(self, text, url, lang):
         self.text: str = text.lower()
+        self.url: str = url
         self.__lang: str = lang
         self.__nlp = local_nlps.__getattribute__(self.__lang)
         self.lemma: str = " ".join([token.lemma_ for token in self.__nlp(text)]).lower()
@@ -41,10 +42,13 @@ class Phrase:
 
     @logger.catch
     def values(self):
-        reply = {'Сверхточное': str(self.exact)[1:-1],
-                 'Точное': str(self.exact_lemmed)[1:-1],
-                 'Разбитое': str(self.participant)[1:-1],
-                 'Частичное': str(self.imprecise)[1:-1]}
+        reply = {
+            'Сверхточное': str(self.exact)[1:-1],
+            'Точное': str(self.exact_lemmed)[1:-1],
+            'Разбитое': str(self.participant)[1:-1],
+            'Частичное': str(self.imprecise)[1:-1],
+            'ссылка': self.url
+        }
 
         self.exact.clear()
         self.exact_lemmed.clear()
@@ -150,4 +154,3 @@ class Sentence:
         return as_class(dict(phrase=phrase.text,
                              id_=self.id_,
                              count=len(matches)))
-

@@ -44,7 +44,11 @@
       <tr>
         <td>{{ file.filename }}</td>
         <td>
+          {% if file.status == 'Обработан' %}
           <span class="material-icons" style="color: green">done_all</span>
+          {% else %}
+          <span class="material-icons" style="color: red">close</span>
+          {% endif %}
         </td>
         <td>
             <i>{{file.process_time}} s</i>

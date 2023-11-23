@@ -176,17 +176,22 @@ def operate(filename: str):
         message = (f'Не верные названия страниц в xlsx файле\n'
                    f' - должно быть ["Текст", "Ключи"]')
         logger.error(message)
-        return jsonify(dict(message=message,
-                            code='error'))
+
+        return change_status_on_exception(message, filename)
     except RuntimeError:
         message = "Файл поврежден. Дальнейшая обработка не возможна"
         logger.error(message)
-        return jsonify(dict(message=message,
-                            code='error'))
+        return change_status_on_exception(message, filename)
 
     logger.info(f"Начинаю обработку файла: {filename}")
     start_time = datetime.now()
-    unzipped_dir = lemme.run()
+
+    try:
+        unzipped_dir = lemme.run()
+    except Exception as ex:
+        logger.error(ex)
+        return change_status_on_exception(ex, filename)
+
     end_time = datetime.now()
     process_time = end_time - start_time
 
@@ -216,6 +221,15 @@ def operate(filename: str):
                             code='info'))
 
     return jsonify(dict(message="Не удалось найти файл в бд",
+                        code='error'))
+
+
+def change_status_on_exception(ex, filename):
+    file = File.query.filter_by(filename=filename).first()
+    if file:
+        file.status = 'Ошибка'
+        db.session.commit()
+    return jsonify(dict(message=ex,
                         code='error'))
 
 

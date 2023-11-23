@@ -26,11 +26,11 @@ def time_of(function):
 
 class Phrase:
     def __init__(self, text, url, lang):
-        self.text: str = text.lower()
+        self.text: str = ' '.join(text.lower().split())
         self.url: str = url
         self.__lang: str = lang
         self.__nlp = local_nlps.__getattribute__(self.__lang)
-        self.lemma: str = " ".join([token.lemma_ for token in self.__nlp(text)]).lower()
+        self.lemma: str = " ".join([token.lemma_ for token in self.__nlp(self.text)]).lower()
 
         self.exact = []
         self.exact_lemmed = []
@@ -64,7 +64,7 @@ class Text:
     def __init__(self, text: str):
         self.lang = detect(text)
         self.nlp = local_nlps.__getattribute__(self.lang)
-        self.text = text.replace('\n', '.')
+        self.text = ' '.join(text.replace('\n', '.').split())
         self.sentences = [Sentence(s_id, x.replace('..', '.').lower(), self.lang, self.nlp)
                           for s_id, x in enumerate(re.split(r'(?<=[.!?\n])\s+', text), start=1)]
 
@@ -77,7 +77,7 @@ class Sentence:
     def __init__(self, sent_id, text, lang, nlp):
         self.id_ = sent_id
         self.lang = lang
-        self.text: str = text
+        self.text: str = ' '.join(text.split())
         self.__nlp = nlp
         self.lemmatized = None
 
@@ -103,54 +103,65 @@ class Sentence:
 
     @logger.catch
     def __match_exact(self, phrase: Phrase) -> DefaultMunch:
+        """ Поиск супер точного вхождения в предложение """
+
         logger.debug(f"Phrase: {phrase.text}")
 
         sentence = self.clear_full_sentence()
-        matches = re.findall(phrase.text, sentence)
+        matches = int(phrase.text in sentence)
+        logger.debug(f'| СуперТочное вхождение | \n - {phrase.text = } \n - {sentence = } \n - {matches = }')
 
-        modified_sentence = re.sub(r'\b' + re.escape(phrase.text) + r'\b', '', sentence)
-        self.lemmatized = self.lemmatize(modified_sentence)
-        logger.debug(f'Исходный: {sentence}')
-        logger.debug(f'Лемма: {self.lemmatized}')
+        self.lemmatized = self.lemmatize(sentence.replace(phrase.text, ''))
+        logger.debug("| СуперТочное вхождение | - удаляю встреченный ключ из предложения")
+        logger.debug(f'| СуперТочное вхождение | - Привожу к лемме: {self.lemmatized}')
 
         return as_class(dict(phrase=phrase.text,
                              id_=self.id_,
-                             count=len(matches)))
+                             count=matches))
 
     @logger.catch
     def __match_exactlemmed(self, phrase: Phrase) -> DefaultMunch:
-        sentence = self.lemmatized
+        """ Поиск точного вхождения в предложение """
 
-        logger.trace(f"Phrase: {phrase.lemma}")
+        matches = int(phrase.lemma in self.lemmatized)
+        logger.debug(f'| Точное вхождение | \n - {phrase.lemma = } \n - {self.lemmatized = } \n - {matches = }')
 
-        matches = re.findall(r'\b' + re.escape(phrase.lemma) + r'\b', sentence)
-        self.lemmatized = re.sub(r'\b' + re.escape(phrase.lemma) + r'\b', '', sentence)
-        logger.trace(f'Лемма: {self.lemmatized}')
+        logger.debug("| Точное вхождение | - удаляю встреченный ключ из предложения")
+        self.lemmatized = self.lemmatized.replace(phrase.text, '')
+
         return as_class(dict(phrase=phrase.text,
                              id_=self.id_,
-                             count=len(matches)))
+                             count=matches))
 
     @logger.catch
     def __match_participant(self, phrase: Phrase) -> DefaultMunch:
-        sentence = self.lemmatized
-        logger.trace(f"Phrase: {phrase.lemma}")
-        str_pattern = r'\b' + r'\b.*?\b'.join(map(re.escape, phrase.lemma.split())) + r'\b'
-        return self.__re_search_lemmed(phrase, sentence, str_pattern)
+        """ Поиск разбитое вхождения в предложение """
+
+        sentence_list = self.lemmatized.split()
+        phrase_list = phrase.lemma.split()
+        if all(item in sentence_list for item in phrase_list):
+            matches = 1
+            logger.debug(f'| Разбитое вхождение | \n - {phrase.lemma = } \n - {self.lemmatized = } \n - {matches = }')
+
+            logger.debug("| Разбитое вхождение | - удаляю встреченный ключ из предложения")
+            [sentence_list.remove(item) for item in phrase_list]
+            self.lemmatized = ' '.join(sentence_list)
+
+        else:
+            matches = 0
+            logger.debug(f'| Разбитое вхождение | \n - {phrase.lemma = } \n - {self.lemmatized = } \n - {matches = }')
+            logger.debug("| Разбитое вхождение | - Ключ не был встречен")
+
+        return as_class(dict(phrase=phrase.text,
+                             id_=self.id_,
+                             count=matches))
 
     @logger.catch
     def __match_imprecise(self, phrase: Phrase) -> DefaultMunch:
-        lemma_phrase = phrase.lemma.replace(' ', '|^')
-        sentence = self.lemmatized
-        str_pattern = r'\w*?(^' + lemma_phrase + ')'
+        """ Поиск частичного вхождения в предложение """
+        matches = int(any(item in self.lemmatized.split() for item in phrase.lemma.split()))
+        logger.debug(f'| Разбитое вхождение | \n - {phrase.lemma = } \n - {self.lemmatized = } \n - {matches = }')
 
-        return self.__re_search_lemmed(phrase, sentence, str_pattern)
-
-    @logger.catch
-    def __re_search_lemmed(self, phrase, sentence, str_pattern):
-        pattern = re.compile(str_pattern)
-        matches = re.findall(pattern, sentence)
-        self.lemmatized = re.sub(r'\b' + re.escape(phrase.lemma) + r'\b', '', sentence)
-        logger.trace(f'Лемма: {self.lemmatized}')
         return as_class(dict(phrase=phrase.text,
                              id_=self.id_,
-                             count=len(matches)))
+                             count=matches))

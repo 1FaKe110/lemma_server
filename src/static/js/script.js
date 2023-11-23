@@ -1,3 +1,7 @@
+window.addEventListener('load', function () {
+    document.body.classList.add('loaded');
+});
+
 function uploadFile() {
     var fileInput = document.getElementById("fileUpload");
     var file = fileInput.files[0];
@@ -35,10 +39,6 @@ function operate(filename) {
     })
     location.reload();
 }
-
-window.addEventListener('load', function () {
-    document.body.classList.add('loaded');
-});
 
 function searchTable(tableId, searchInputId) {
 

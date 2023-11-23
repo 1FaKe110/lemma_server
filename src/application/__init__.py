@@ -22,6 +22,7 @@ class Application:
                 for raw in pd.read_excel(reader, 'Текст', header=None)[0]:
                     self.texts.append(Text(raw.replace('\n', '. ')))
                 self.keys = pd.read_excel(reader, 'Ключи', header=None, index_col=0)
+
             except ValueError:
                 message = f'Файл {xlsx_filepath} поврежден!\n {ValueError}'
                 raise RuntimeError(message)

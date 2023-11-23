@@ -176,8 +176,8 @@ def operate(filename: str):
         message = (f'Не верные названия страниц в xlsx файле\n'
                    f' - должно быть ["Текст", "Ключи"]')
         logger.error(message)
-
         return change_status_on_exception(message, filename)
+
     except RuntimeError:
         message = "Файл поврежден. Дальнейшая обработка не возможна"
         logger.error(message)
@@ -225,6 +225,9 @@ def operate(filename: str):
 
 
 def change_status_on_exception(ex, filename):
+    """ Проставление статуса ошибки в бд """
+
+    logger.info(f'Для {filename} проставляю статус ошибки по причине: \n - {ex}')
     file = File.query.filter_by(filename=filename).first()
     if file:
         file.status = 'Ошибка'

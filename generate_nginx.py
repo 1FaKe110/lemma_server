@@ -26,7 +26,7 @@ nginx_config += f"    server_name 147.45.246.25;\n\n"
 for route in routes:
     location = route if '<' not in route else re.sub(r'/<.*?>', r'/*', route)
     nginx_config += f"    location {location} {{\n"
-    nginx_config += (f"        proxy_pass http://{Config.Nginx.docker_ip}:{Config.Nginx.port}"
+    nginx_config += (f"        proxy_pass http://172.17.0.2:5000"
                      + re.sub(r'<\w+>', '*', route) + ";")
     nginx_config += additional
     nginx_config += "    }\n"
@@ -34,7 +34,7 @@ for route in routes:
 nginx_config += "}\n"
 
 print(nginx_config)
-with open('/etc/nginx/sites-enabled/chgk', 'w', encoding='utf-8') as f:
+with open('/etc/nginx/sites-enabled/lemma', 'w', encoding='utf-8') as f:
     f.write(nginx_config)
 
 print(os.popen('nginx -t').read())

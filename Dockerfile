@@ -1,4 +1,4 @@
-FROM python:3.10.7-slim-bullseye
+FROM cr.yandex/mirror/python:3.10.7-slim-bullseye
 
 WORKDIR /usr/src/app
 
